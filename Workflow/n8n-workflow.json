@@ -1,1 +1,85 @@
-
+{
+  "name": "SOC_automation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wazuh-alert"
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [40, 0],
+      "name": "Webhook"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a Senior SOC L2 Analyst.\n\nAnalyze this Wazuh alert.\n\nAlert: {{$json.body.rule.description}}\nSeverity: {{$json.body.rule.level}}\nFile: {{$json.body.syscheck.path}}\nAgent: {{$json.body.agent.name}} ({{$json.body.agent.ip}})\n\nProvide:\n1. Classification (Suspicious / Benign)\n2. Reason\n3. Immediate SOC actions"
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [260, 0],
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant"
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [260, 200],
+      "name": "Groq Chat Model",
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_CHAT_ID",
+        "text": "🚨 WAZUH SOC ALERT 🚨\n\n🔥 Suspicious activity detected!\n\n⚠️ Alert: {{ $json.body.rule.description }}\n🆔 Rule ID: {{ $json.body.rule.id }}\n\n📊 Severity: {{ $json.body.rule.level >= 10 ? '🔴 CRITICAL' : ($json.body.rule.level >= 7 ? '🟠 HIGH' : '🟡 MEDIUM') }} (Level {{ $json.body.rule.level }})\n\n💻 Agent: {{ $json.body.agent.name }}\n🌐 IP: {{ $json.body.agent.ip }}\n\n📂 File: {{ $json.body.syscheck?.path || \"N/A\" }}\n\n🧠 AI Analysis:\n{{ $json.text || $json.generations?.[0]?.text }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [620, 0],
+      "name": "Telegram",
+      "credentials": {}
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
