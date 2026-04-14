@@ -20,8 +20,8 @@ Wazuh Agent -> Wazuh Manager -> VirusTotal API -> n8n Webhook -> AI Analysis -> 
 
 | Component | Documentation Link |
 | :--- | :--- |
-| Wazuh + VirusTotal Alert | [View Screenshot](wazuhalert.png) |
-| Alert Metadata (JSON) | [View Screenshot](wazuhalert2.png) |
+| Wazuh + VirusTotal Alert | [View Screenshot](Screenshots/wazuhalert.png) |
+| Alert Metadata (JSON) | [View Screenshot](Screenshots/wazuhalert2.png) |
 | n8n Workflow Automation | [View Screenshot](Screenshots/workflow.png) |
 | AI (Groq) Integration | [View Screenshot](Screenshots/groq.png) |
 | Telegram Incident Report | [View Screenshot](Screenshots/telegram.png) |
