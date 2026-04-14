@@ -12,6 +12,8 @@ This project implements an automated security monitoring pipeline. It uses Wazuh
 ## Architecture
 Wazuh Agent -> Wazuh Manager -> VirusTotal API -> n8n Webhook -> AI Analysis -> Telegram
 
+![SOC Automation Flow](./Screenshots/architecture_diagram.png)
+
 ---
 
 ## Technical Evidence (Screenshots)
